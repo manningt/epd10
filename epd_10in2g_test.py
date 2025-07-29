@@ -12,6 +12,23 @@ import traceback
 
 logging.basicConfig(level=logging.DEBUG)
 
+FONT_ITALIC_PATH = '/usr/share/fonts/truetype/piboto/Piboto-Bold.ttf'
+FONT_NORMAL_PATH = '/usr/share/fonts/truetype/piboto/Piboto-BoldItalic.ttf'
+
+def find_font_fit(msg):
+    fontsize = 9  # starting font size
+
+    font = ImageFont.truetype(FONT_NORMAL_PATH, fontsize)
+    while font.getlength(msg) < (epd.width-40):  
+        fontsize += 1 # iterate until the text size is just larger than the criteria
+        font = ImageFont.truetype(FONT_NORMAL_PATH, fontsize)
+
+    fontsize -= 1 # optionally de-increment to be sure it is less than criteria
+
+    print(f"final font size= {fontsize} for '{msg}'")
+    return fontsize
+
+
 try:
     logging.info("epd2in13g Demo")
 
@@ -23,17 +40,35 @@ try:
         logging.info("Clear")
         epd.Clear()
 
-    # font40 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 40)
-    # font40 = ImageFont.truetype('Font.ttc', 40)
-    
+    closed = True
+    if closed:
+        top_fill_color = epd.RED
+        top_text_color = epd.WHITE
+    else:
+        top_fill_color = epd.YELLOW
+        top_text_color = epd.BLACK
+
+    # bottom half is always black with white text; width is 960, height is 640
+
     start_time = datetime.datetime.now()
     Himage = Image.new('RGB', (epd.width, epd.height), epd.WHITE)  # 255: clear the frame
     draw = ImageDraw.Draw(Himage)
+    # top half is a pie-slice (start and end angles are from 3 o'clock), bottom half is black
+    shape = [(0, 0), (epd.width, epd.height)]
+    draw.pieslice(shape, start = 180, end = 0, fill = top_fill_color)
+    draw.rectangle(((0, epd.height/2), (epd.width, epd.height)), fill = epd.BLACK)
 
-    font180 = ImageFont.truetype('/usr/share/fonts/truetype/piboto/Piboto-Bold.ttf', 180)
+    font180 = ImageFont.truetype(FONT_ITALIC_PATH, 180)
     msg = "Closed"
     w = font180.getlength(msg)
-    draw.text(((epd.width-w)/2, 0), msg, font = font180, fill = epd.RED)
+    draw.text(((epd.width-w)/2, 20), msg, font = font180, fill = top_text_color)
+
+    msg_lines = ("Sorry for the inconvenience", "Please come back later")
+    fontsize = find_font_fit(msg_lines[0])
+    lower_msg_font= ImageFont.truetype(FONT_NORMAL_PATH, fontsize)
+    w = lower_msg_font.getlength(msg_lines[0])
+    draw.text(((epd.width-w)/2, (epd.height/2 + 10)), msg_lines[0], font = lower_msg_font, fill = epd.WHITE)
+
     end_time = datetime.datetime.now()
     elapsed_time = end_time - start_time
     # logging.info(f"Time taken to draw text: {elapsed_time.seconds} seconds {elapsed_time.microseconds} microseconds")
