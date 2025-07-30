@@ -25,13 +25,11 @@ def find_font_fit(msg):
 
     fontsize -= 1 # optionally de-increment to be sure it is less than criteria
 
-    print(f"final font size= {fontsize} for '{msg}'")
+    # logging.info(f"final font size= {fontsize} for '{msg}'")
     return fontsize
 
 
 try:
-    logging.info("epd2in13g Demo")
-
     epd = epd10in2g.EPD()
     if 1:
         logging.info("init")
@@ -61,24 +59,21 @@ try:
     font180 = ImageFont.truetype(FONT_ITALIC_PATH, 180)
     msg = "Closed"
     w = font180.getlength(msg)
-    draw.text(((epd.width-w)/2, 20), msg, font = font180, fill = top_text_color)
+    draw.text(((epd.width-w)/2, 60), msg, font = font180, fill = top_text_color)
 
-    msg_lines = ("Sorry for the inconvenience", "Please come back later")
-    fontsize = find_font_fit(msg_lines[0])
-    lower_msg_font= ImageFont.truetype(FONT_NORMAL_PATH, fontsize)
-    w = lower_msg_font.getlength(msg_lines[0])
-    draw.text(((epd.width-w)/2, (epd.height/2 + 10)), msg_lines[0], font = lower_msg_font, fill = epd.WHITE)
+    msg_lines = ("Sorry for the inconvenience", "Our tour guide is unavailable")
+    previous_font_size = 0
+    for line in msg_lines:
+        fontsize = find_font_fit(line)
+        lower_msg_font = ImageFont.truetype(FONT_NORMAL_PATH, fontsize)
+        w = lower_msg_font.getlength(line)
+        draw.text(((epd.width-w)/2, (epd.height/2 + 25 + previous_font_size)), line, font = lower_msg_font, fill = epd.WHITE)
+        previous_font_size = fontsize + 20
+
 
     end_time = datetime.datetime.now()
     elapsed_time = end_time - start_time
     # logging.info(f"Time taken to draw text: {elapsed_time.seconds} seconds {elapsed_time.microseconds} microseconds")
-
-    # draw.line((5, 170, 80, 245), fill = epd.RED)
-    # draw.line((80, 170, 5, 245), fill = epd.YELLOW)
-    # draw.rectangle((5, 170, 80, 245), outline = epd.BLACK)
-    # draw.rectangle((90, 170, 165, 245), fill = epd.YELLOW)
-    # draw.arc((5, 250, 80, 325), 0, 360, fill = epd.BLACK)
-    # draw.chord((90, 250, 165, 325), 0, 360, fill = epd.RED)
 
     start_time = datetime.datetime.now()
     buf = epd.getbuffer(Himage)
@@ -98,14 +93,11 @@ try:
     Himage = Image.open(os.path.join(picdir, '10in2g.bmp'))
     epd.display(epd.getbuffer(Himage))
     time.sleep(3)
- 
-    logging.info("Clear...")
-    epd.Clear()
-    
+   '''
+     
     logging.info("Goto Sleep...")
     epd.sleep()
-   '''
-    logging.info("Ending without Clear & Sleep.")
+    logging.info("Ending with Sleep.")
         
 except IOError as e:
     logging.info(e)
