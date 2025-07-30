@@ -1,0 +1,35 @@
+body {
+  color: #222;
+  background: #fff;
+  font: 100% system-ui;
+}
+a {
+  color: #0033cc;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #eee;
+    background: #121212;
+  }
+
+  body a {
+    color: #809fff;
+  }
+}
+
+button {
+  background-color: Blue;
+  border: 6px solid lightgray;
+  border-radius: 12px;
+  color: white;
+  padding: 4px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 32px;
+  margin: 0px 0px 20px 0px;
+}
+button:hover {
+  background-color: darkblue;
+}
