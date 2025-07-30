@@ -2,13 +2,13 @@
 # -*- coding:utf-8 -*-
 import sys
 import os
+import time
+import traceback
 
 import logging
 import epd10in2g
-import time
 import datetime
 from PIL import Image,ImageDraw,ImageFont
-import traceback
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -69,6 +69,7 @@ try:
         w = lower_msg_font.getlength(line)
         draw.text(((epd.width-w)/2, (epd.height/2 + 25 + previous_font_size)), line, font = lower_msg_font, fill = epd.WHITE)
         previous_font_size = fontsize + 20
+        # could use font.getheight()
 
 
     end_time = datetime.datetime.now()
