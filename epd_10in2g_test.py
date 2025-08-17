@@ -43,6 +43,7 @@ def change_message(top_msg, bottom_msgs):
     # width is 960, height is 640
     Himage = Image.new('RGB', (epd.width, epd.height), epd.WHITE)  # 255: clear the frame
     draw = ImageDraw.Draw(Himage)
+    # logging.info(f"{Himage.size=} draw size={sys.getsizeof(draw)}")
     # top half is a pie-slice (start and end angles are from 3 o'clock), bottom half is black
     shape = [(0, 0), (epd.width, epd.height)]
     draw.pieslice(shape, start = 180, end = 0, fill = top_fill_color)
@@ -61,6 +62,7 @@ def change_message(top_msg, bottom_msgs):
         previous_font_size = fontsize + 20
             # could use font.getheight()
     buf = epd.getbuffer(Himage)
+    # logging.info(f"buf size (bytes)={sys.getsizeof(buf)}") # yields 614400 bytes, which is 960*640
     
     start_time = datetime.datetime.now()
     logging.info("Before display image")
@@ -79,12 +81,14 @@ if __name__ == '__main__':
         logging.info(e)
         exit()
 
+    message_type = "Closed"
+
     try:
-        # change_message("Closed", ("Sorry for the inconvenience", "Our tour guide is unavailable"))
-        # logging.info("Should display closed message")
-        # time.sleep(5)
-        change_message("Open", ("Tour in progress", "Please return at 2 for a tour"))
-        logging.info("Should display Return at 2 message")
+        if message_type == "Closed":
+            change_message("Closed", ("Sorry for the inconvenience", "Our tour guide is unavailable"))
+        else:
+            change_message("Open", ("Tour in progress", "Please return at 2 for a tour"))
+        logging.info(f"Should display {message_type} message")
  
     except Exception as e:
         logging.info(e)
