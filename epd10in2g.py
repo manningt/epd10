@@ -195,7 +195,7 @@ class EPD:
         return buf
 
     def display(self, image):
-        self.send_command(0x10)
+        self.send_command(0x10) # DATA_START_TRANSMISSION_1
         self.send_data2(image)
                     
         self.TurnOnDisplay()
