@@ -68,18 +68,19 @@ class EPD:
         epdconfig.digital_write(self.dc_pin, 0)
         epdconfig.digital_write(self.cs_pin, 0)
         epdconfig.spi_writebyte([command])
-        epdconfig.digital_write(self.cs_pin, 1)
+        # epdconfig.digital_write(self.cs_pin, 1)
 
     def send_data(self, data):
         epdconfig.digital_write(self.dc_pin, 1)
         epdconfig.digital_write(self.cs_pin, 0)
         epdconfig.spi_writebyte([data])
-        epdconfig.digital_write(self.cs_pin, 1)
+        # epdconfig.digital_write(self.cs_pin, 1)
 
     # send a lot of data   
     def send_data2(self, data):
         epdconfig.digital_write(self.dc_pin, 1)
         epdconfig.digital_write(self.cs_pin, 0)
+        #https://pypi.org/project/spidev/
         epdconfig.spi_writebyte2(data)
         epdconfig.digital_write(self.cs_pin, 1)
         
@@ -98,8 +99,8 @@ class EPD:
     def init(self):
         if (epdconfig.module_init() != 0):
             return -1
-        # EPD hardware init start
-
+        # chip select can always be asserted (low); removed unassert code in send_command and send_data
+        epdconfig.digital_write(self.cs_pin, 0)
         self.reset()
         self.ReadBusy()
 
