@@ -81,6 +81,45 @@ if __name__ == '__main__':
         logging.info(e)
         exit()
 
+    start_time = datetime.datetime.now()
+    logging.info("Before filling display with colors")
+    if 0:
+        # Fill the display with 4 horizontal stripes of colors
+        epd.send_command(0x10)
+        for k in [0,240,480,720]:
+            if k < 240:
+                color = 0x00 #0x00 # black
+            elif k < 480:
+                color = 0xFF # red
+            elif k < 720:
+                color = 0xAA # yellow
+            else:
+                color = 0x55 # white
+            for j in range(k, k+240):
+                for i in range(0, 160):
+                    epd.send_data(color)
+        logging.info("Before TurnOnDisplay")
+        epd.TurnOnDisplay()
+    if 0:
+        epd.send_command(0x10)
+        # put a rectangle of a color in the top left corner
+        for j in range(0, epd.height):
+            for i in range(0, epd.width//4):
+                if (i < 8) and (j < 20):
+                    epd.send_data(0xAA)
+                else:
+                    epd.send_data(0)
+        logging.info("Before TurnOnDisplay")
+        epd.TurnOnDisplay()
+
+    if 0:
+        epd.Clear(color=0x55) # 0xFF: red, 0x00: black; 0x55: white; 0xAA: yellow
+        exit()    
+
+    end_time = datetime.datetime.now()
+    elapsed_time = end_time - start_time
+    logging.info(f"Time taken to display: {elapsed_time.seconds} seconds {elapsed_time.microseconds} microseconds")
+
     message_type = "Closed"
 
     try:
