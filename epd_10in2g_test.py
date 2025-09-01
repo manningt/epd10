@@ -75,7 +75,10 @@ def change_message(top_msg, bottom_msgs):
 if __name__ == '__main__':
     try:
         epd = epd10in2g.EPD()
-        epd.init()
+        rc = epd.init()
+        if rc != 0:
+            logging.info("e-Paper init failed")
+            exit()
 
     except Exception as e:
         logging.info(e)
