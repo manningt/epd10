@@ -85,11 +85,15 @@ class EPD:
         epdconfig.digital_write(self.cs_pin, 1)
         
     def ReadBusy(self):
-        logger.debug("e-Paper busy H")
         epdconfig.delay_ms(100)
+        counter = 0
         while(epdconfig.digital_read(self.busy_pin) == 0):      # 0: idle, 1: busy
-            epdconfig.delay_ms(5)
-        logger.debug("e-Paper busy release")
+            epdconfig.delay_ms(100)
+            counter += 1
+            if counter > 300:
+                logger.debug("e-Paper busy timeout")
+                break
+        logger.debug("e-Paper busy released on counter %d" % counter)
         
     def TurnOnDisplay(self):
         self.send_command(0x12) # DISPLAY_REFRESH
@@ -102,7 +106,7 @@ class EPD:
         # chip select can always be asserted (low); removed unassert code in send_command and send_data
         epdconfig.digital_write(self.cs_pin, 0)
         self.reset()
-        self.ReadBusy()
+        # self.ReadBusy()
 
         self.send_command(0x00)
         self.send_data(0x0F)	
@@ -114,7 +118,6 @@ class EPD:
         self.send_data(0x93)	
         self.send_data(0xC1)  # A1
 
-        
         self.send_command(0x41)
         self.send_data(0x00)	
 
