@@ -88,9 +88,9 @@ class EPD:
         epdconfig.delay_ms(100)
         counter = 0
         while(epdconfig.digital_read(self.busy_pin) == 0):      # 0: idle, 1: busy
-            epdconfig.delay_ms(100)
+            epdconfig.delay_ms(10)
             counter += 1
-            if counter > 300:
+            if counter > 200:
                 logger.debug("e-Paper busy timeout")
                 break
         logger.debug("e-Paper busy released on counter %d" % counter)
