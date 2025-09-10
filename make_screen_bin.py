@@ -59,9 +59,7 @@ def generate_screen(top_msg, bottom_msgs):
         draw.text(((epd.width-w)/2, (epd.height/2 + 25 + previous_font_size)), line, font = lower_msg_font, fill = bottom_text_color)
         previous_font_size = fontsize + 20
             # could use font.getheight()
-    buf = epd.getbuffer(Himage)
-    # logging.info(f"buf size (bytes)={sys.getsizeof(buf)}") # yields 614400 bytes, which is 960*640
-    return bytearray(buf)
+    return Himage
 
 
 if __name__ == '__main__':
@@ -69,16 +67,18 @@ if __name__ == '__main__':
     # need the following to get the constants defined
     epd = epd10in2g.EPD()
 
-    message_type = "Closed" 
+    display_screens = []
+    display_screens.append( {"top": "Open", "bottom": ("Tour in progress", "Please return at 1 for a tour"), "filename": "open-tour-at-1"})
+    # display_screens.append( {"top": "Open", "bottom": ("Tour in progress", "Please return at 2 for a tour"), "filename": "open-tour-at-2"})
+    display_screens.append( {"top": "Open", "bottom": ("Tour in progress", "Please return at 3 for a tour"), "filename": "open-tour-at-3"})
+    display_screens.append( {"top": "Closed", "bottom": ("Visiting Hours at:", "sargenthouse.org/visit"), "filename": "closed-see-website"})
+    # display_screens.append( {"top": "Closed", "bottom": ("Sorry for the inconvenience", "Our tour guide is unavailable"), "filename": "closed-no-guide"})
+    # display_screens.append( {"top": "Open", "bottom": ("Welcome to the museum!", "Enjoy your visit"), "filename": "open-welcome"})
 
-    image = generate_screen("Closed", ("Sorry for the inconvenience", "Our tour guide is unavailable"))
-    with open("closed-no-guide.bin", "wb") as file:
-        file.write(image)
-
-    image = generate_screen("Open", ("Tour in progress", "Please return at 2 for a tour"))
-    with open("open-tour-at-2.bin", "wb") as file:
-        file.write(image)
-
-    image = generate_screen("Open", ("Welcome to the museum!", "Enjoy your visit"))
-    with open("open-welcome.bin", "wb") as file:
-        file.write(image)
+    for screen in display_screens:
+        image = generate_screen(screen["top"], screen["bottom"])
+        image.save(f'{screen["filename"]}.png')
+        buf = bytearray(epd.getbuffer(image))
+        with open(f'{screen["filename"]}.bin', "wb") as file:
+            file.write(buf)
+        logging.info(f'Wrote {screen["filename"]}.bin and .png')
