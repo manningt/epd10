@@ -1,7 +1,7 @@
 # lgd-nfy file is a temporary file created by the gpiozero library
 *gd-nfy*
-__pycache__
+__pycache__/
 .venv
-*.pyc
 *.bin
+*.png
 
