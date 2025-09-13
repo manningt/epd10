@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send, emit
 app = Flask(__name__)
+import os
 
 socketio = SocketIO(app)
 
@@ -39,13 +40,17 @@ def index():
     }
     return render_template('index.html', \
         page_title="Select_Message", \
-        heading="Select Message",
+        heading="Select the message for the visitor's door display", \
         fieldset=radio_fieldset)
 
 
 @socketio.on('change_message')
 def handle_change_message(data):
-   app.logger.info(f'received change_message. {data=}')
+   # app.logger.debug(f'received change_message. {data=}')
+   if 'Message' in data:
+      change_message(data['Message'])
+   else:
+      app.logger.error("No 'Message' key in data")
 
 
 if __name__ == '__main__':
