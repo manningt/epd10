@@ -18,8 +18,8 @@ a {
   }
 }
 
-button {
-  background-color: Blue;
+label {
+  background-color: navy;
   border: 6px solid lightgray;
   border-radius: 12px;
   color: white;
@@ -27,9 +27,17 @@ button {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 32px;
+  font-size: 24px;
   margin: 0px 0px 20px 0px;
 }
-button:hover {
-  background-color: darkblue;
+
+input[type="radio"]:checked + label {
+  background-color: darkgreen;
+}
+
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
 }
