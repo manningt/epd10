@@ -26,12 +26,27 @@ def change_message(message_number):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    radio_fieldset = {
+        'name': 'Message',
+        'buttons': [
+            {'label': 'Closed: See website for hours', 'value': '6', 'checked': True},
+            {'label': 'Closed: No tour guide', 'value': '5'},
+            {'label': 'Open: Welcome', 'value': '4'},
+            {'label': 'Open: Come back at 1', 'value': '1'},
+            {'label': 'Open: Come back at 2', 'value': '2'},
+            {'label': 'Open: Come back at 3', 'value': '3'},
+        ]
+    }
+    return render_template('index.html', \
+        page_title="Select_Message", \
+        heading="Select Message",
+        fieldset=radio_fieldset)
+
 
 @socketio.on('change_message')
 def handle_change_message(data):
    app.logger.info(f'received change_message. {data=}')
-   
+
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

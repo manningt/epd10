@@ -3,34 +3,17 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Button Page</title>
+      <title>{{page_title}}</title>
       <link rel="stylesheet" href="{{ url_for('static', filename='css/simple.css') }}">
    </head>
    <body>
-      <legend>Select Message</legend>
-      <input type="radio" name="Message" id="1" value="1">
-      <label for="1">Closed: normal</label><br>
-      <input type="radio" name="Message" id="2" value="2">
-      <label for="2">Open: normal</label><br>
+      <h1>{{heading}}</h1>
+      {%- for button in fieldset['buttons'] %}
+         <input type="radio" id="{{button['label']}}" name="{{fieldset['name']}}" value={{button['value']}}
+         {%- if button['checked'] is defined %} checked{%- endif %}>
+         <label for="{{button['label']}}">{{button['label']}}</label><br>
+      {%- endfor %}
 
-      <!-- <form action="/closed_normal" method="post">
-         <button type="submit">Closed: normal</button>
-      </form>
-      <form action="/closed_no_guide" method="post">
-         <button type="submit">Closed: no tour guide</button>
-      </form>
-      <form action="/open_normal" method="post">
-         <button type="submit">Open: normal</button>
-      </form>
-      <form action="/tour_in_progress_1" method="post">
-         <button type="submit">Open: Come back at 1</button>
-      </form>
-      <form action="/tour_in_progress_2" method="post">
-         <button type="submit">Open: Come back at 2</button>
-      </form>
-      <form action="/tour_in_progress_3" method="post">
-         <button type="submit">Open: Come back at 3</button>
-      </form> -->
    </body>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
    <script type="text/javascript">
