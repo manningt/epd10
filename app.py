@@ -5,6 +5,17 @@ import os
 
 socketio = SocketIO(app)
 
+# img_map = [ "0", "open-tour-at-1", "open-tour-at-2","open-tour-at-3", \
+#    "open-welcome","closed-no-guide","closed-see-website"]
+labels = [ \
+   "Closed: See website for hours", \
+   "Closed: No tour guide", \
+   "Open: Welcome", \
+   "Open: Come back at 1", \
+   "Open: Come back at 2", \
+   "Open: Come back at 3"]
+label_values = [ "6", "5", "4", "1", "2", "3"]
+
 def change_message(message_number):
    try:
       os.chdir('/home/pi/epaper')
@@ -27,21 +38,14 @@ def change_message(message_number):
 
 @app.route('/')
 def index():
-    radio_fieldset = {
-        'name': 'Message',
-        'buttons': [
-            {'label': 'Closed: See website for hours', 'value': '6', 'checked': True},
-            {'label': 'Closed: No tour guide', 'value': '5'},
-            {'label': 'Open: Welcome', 'value': '4'},
-            {'label': 'Open: Come back at 1', 'value': '1'},
-            {'label': 'Open: Come back at 2', 'value': '2'},
-            {'label': 'Open: Come back at 3', 'value': '3'},
-        ]
-    }
-    return render_template('index.html', \
-        page_title="Select_Message", \
-        heading="Select the message for the visitor's door display", \
-        fieldset=radio_fieldset)
+   radio_fieldset = {'name': 'Message','buttons': []}
+   for i in range(len(labels)):
+      radio_fieldset['buttons'].append({'label': labels[i], 'value': label_values[i]})
+
+   return render_template('index.html', \
+      page_title="Select_Message", \
+      heading="Select the message for the visitor's door display", \
+      fieldset=radio_fieldset)
 
 
 @socketio.on('change_message')
