@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request
-from flask_socketio import SocketIO, send, emit
-app = Flask(__name__)
+from flask import Flask, render_template, logging
+from flask_socketio import SocketIO
 import os
 
+import logging
+logging.basicConfig(level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s : %(message)s')
+
+app = Flask(__name__)
 socketio = SocketIO(app)
 
 # img_map = [ "0", "open-tour-at-1", "open-tour-at-2","open-tour-at-3", \
@@ -26,7 +29,7 @@ def change_message(message_number):
       dir_list = next(os.walk('.'))[1]
    except StopIteration:
       dir_list = []
-   app.logger.debug(f"Directories in current path: {dir_list}")
+   # app.logger.debug(f"Directories in current path: {dir_list}")
    for directory in dir_list:
       os.rmdir(directory)
    try:
@@ -35,12 +38,26 @@ def change_message(message_number):
       app.logger.error(f"Error creating directory {message_number}: {e}")
    app.logger.debug(f"Changed message to {message_number}")
 
+def get_current_message_number():
+   try:
+      dir_list = next(os.walk('/home/pi/epaper'))[1]
+      if len(dir_list) > 0:
+         return dir_list[0]
+   except StopIteration:
+      dir_list = []
+   else:
+      return None
 
 @app.route('/')
 def index():
+   current_message_number = get_current_message_number()
+   # app.logger.debug(f'{current_message_number=}')
    radio_fieldset = {'name': 'Message','buttons': []}
    for i in range(len(labels)):
-      radio_fieldset['buttons'].append({'label': labels[i], 'value': label_values[i]})
+      button = {'label': labels[i], 'value': label_values[i]}
+      if label_values[i] == current_message_number:
+         button['checked'] = True
+      radio_fieldset['buttons'].append(button)
 
    return render_template('index.html', \
       page_title="Select_Message", \
