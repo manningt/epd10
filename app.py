@@ -31,9 +31,10 @@ def change_message(message_number):
       dir_list = []
    # app.logger.debug(f"Directories in current path: {dir_list}")
    for directory in dir_list:
-      os.rmdir(directory)
+      if directory[0] == 'm' and len(directory) == 2:
+         os.rmdir(directory)
    try:
-      os.mkdir(str(message_number))
+      os.mkdir(f'm{message_number}')
    except Exception as e:
       app.logger.error(f"Error creating directory {message_number}: {e}")
    app.logger.debug(f"Changed message to {message_number}")
@@ -41,12 +42,12 @@ def change_message(message_number):
 def get_current_message_number():
    try:
       dir_list = next(os.walk('/home/pi/epaper'))[1]
-      if len(dir_list) > 0:
-         return dir_list[0]
    except StopIteration:
       dir_list = []
-   else:
-      return None
+   for directory in dir_list:
+      if directory[0] == 'm'and len(directory) == 2:
+         return directory[1]
+   return None
 
 @app.route('/')
 def index():
