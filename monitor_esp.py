@@ -69,8 +69,8 @@ def get_current_sleep_duration():
                return_enum = SleepDuration.VSHORT
             case _:
                logging.debug(f'Unknown sleep duration: {sleep_seconds} seconds')
-         if return_enum:
-            break
+      if return_enum:
+         break
    # logging.debug(f'sleep duration not found')
    return return_enum
 
