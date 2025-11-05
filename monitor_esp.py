@@ -84,11 +84,17 @@ def main():
       if modified:
          # print(f'\nLog file modified: {modified.strip()} at {datetime.now()}')
          # logging.debug(f'{last_line=}')
-         if last_line and ('[pi] OK LOGIN' in last_line):
-            logging.info('File transfer detected! Exiting monitor.')
+         if last_line and ('] OK LOGIN' in last_line):
+            logging.info('login detected! Exiting monitor.')
             break
       else:
          print('. ', end='', flush=True)
+
+'''
+The following gets written to the ftp log:
+Wed Nov  5 07:45:50 2025 [pid 3293] CONNECT: Client "::ffff:10.42.1.171"
+Wed Nov  5 07:45:50 2025 [pid 3292] [user] OK LOGIN: Client "::ffff:10.42.1.171"
+'''
 
 
 if __name__ == '__main__':
