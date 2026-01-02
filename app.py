@@ -1,3 +1,12 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "flask",
+#   "flask_socketio"
+# ]
+# ///
+
 from flask import Flask, render_template, logging
 from flask_socketio import SocketIO
 import os
@@ -76,4 +85,4 @@ def handle_change_message(data):
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host="0.0.0.0")
